@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ProgressBar progressBar;
     private boolean running = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,23 +26,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        progressBar = (ProgressBar)findViewById(R.id.progressbarID);
+        text = (TextView)findViewById(R.id.textView);
 
+        progressBar = (ProgressBar)findViewById(R.id.progressbarID);
 
         button = (Button)findViewById(R.id.Start_1);
         button.setOnClickListener(this);
         button.setText("Start");
-
-        text = (TextView)findViewById(R.id.textView);
-
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
 
         text.setText("LIGHT: " + event.values[0]);
-        progressBar.setProgress(((event.values[0]/35000 * 100) > 100) ? 100 : (int)(event.values[0]/35000 * 100));
-//        progressBar.setProgress(50);
+        //progressBar.setProgress(((event.values[0]/35000 * 100) > 100) ? 100 : (int)(event.values[0]/35000 * 100));
+        progressBar.setProgress((int)event.values[0]);
     }
 
     @Override
