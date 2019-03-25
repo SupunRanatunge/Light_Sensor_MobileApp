@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-//import android.widget.ProgressBar;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor lightSensor;
     private TextView text;
     private Button button;
-//    private ProgressBar progressBar;
+    private ProgressBar progressBar;
     private boolean running = false;
 
 
@@ -27,12 +27,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        progressBar = (ProgressBar)findViewById(R.id.progressbarID);
+
 
         button = (Button)findViewById(R.id.Start_1);
         button.setOnClickListener(this);
         button.setText("Start");
-
-
 
         text = (TextView)findViewById(R.id.textView);
 
@@ -41,8 +41,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-            text.setText("LIGHT: " + event.values[0]);
-
+        text.setText("LIGHT: " + event.values[0]);
+        progressBar.setProgress(((event.values[0]/35000 * 100) > 100) ? 100 : (int)(event.values[0]/35000 * 100));
+//        progressBar.setProgress(50);
     }
 
     @Override
@@ -55,13 +56,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(running) {
             running = false;
             button.setText("Start");
+            sensorManager.unregisterListener(this);                 //unregistering the listener
 
-            sensorManager.registerListener(this,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+
         } else {
             running = true;
             button.setText("Stop");
+            sensorManager.registerListener(this,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);  //registering the listener
 
-            sensorManager.unregisterListener(this);
         }
 
     }
